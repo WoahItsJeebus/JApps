@@ -49,7 +49,7 @@ export function startOrbBackground(opts = {}) {
 		...opts,
 	};
 
-	// crude but effective: mobile = fewer orbs + slower cycles unless you override
+	// crude but effective: mobile = fewer orbs + slower cycles unless overridden
 	const isSmall = matchMedia?.("(max-width: 520px)")?.matches;
 	if (isSmall && opts.maxOrbs == null) cfg.maxOrbs = Math.min(cfg.maxOrbs, 3);
 	if (isSmall && opts.durMinMs == null) cfg.durMinMs = Math.max(cfg.durMinMs, 8000);
@@ -263,7 +263,6 @@ export function startOrbBackground(opts = {}) {
 		const dur = to.dur;
 		const fadeDur = Math.max(650, Math.floor(dur * 0.55));
 
-		// If you want blur to change, do it once per cycle (snap), NOT animated
 		if (!cfg.animateBlur) {
 			el.style.filter = `blur(${from.blur}px)`;
 		}
