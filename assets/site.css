@@ -11,6 +11,19 @@
 	--ui: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
+/* Keep scrolling, hide scrollbar (page-level) */
+html, body{
+  overflow: auto;              /* or leave default */
+  -ms-overflow-style: none;    /* IE/old Edge */
+  scrollbar-width: none;       /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+}
+
 * {
 	box-sizing: border-box;
 }
