@@ -197,9 +197,12 @@ button:active {
 	box-shadow: 0 0 0 1px rgba(255, 255, 255, .12);
 	background: rgba(0, 0, 0, .18);
 	object-fit: cover;
+	outline: none;
 	/* good for non-ico images; harmless otherwise */
 
 	transition: transform 160ms ease;
+	-webkit-tap-highlight-color: transparent;
+	z-index: 20;
 }
 
 .appIcon:hover {
@@ -213,24 +216,21 @@ button:active {
 /* Icon-only clickable area */
 .appIconLink {
 	display: inline-flex;
+	align-items: center;
+	width: fit-content;
+	flex-direction: column;
 	border-radius: 12px;
 	/* match .appIcon */
-	overflow: hidden;
+	/* overflow: hidden; */
+	gap: 8px;
 	/* clips image corners cleanly */
 	outline: none;
 	/* we’ll replace default outline */
 	-webkit-tap-highlight-color: transparent;
 }
 
-.appIcon {
-	width: 72px;
-	height: 72px;
-	border-radius: 12px;
-	display: block;
-}
-
 /* Keyboard focus (tabbing) */
-.appIconLink:focus-visible {
+.appIcon:focus-visible {
 	box-shadow:
 		0 0 0 3px rgba(255, 204, 102, .65),
 		/* “orange” ring */
@@ -239,7 +239,7 @@ button:active {
 }
 
 /* Mouse click / tap */
-.appIconLink:active {
+.appIcon:active {
 	box-shadow:
 		0 0 0 3px rgba(255, 204, 102, .55),
 		0 0 0 7px rgba(0, 0, 0, .22);

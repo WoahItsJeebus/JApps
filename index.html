@@ -42,7 +42,7 @@
 				<a class="tabBtn" data-tab="settings" href="./pages/settings/"><span class="tabDot"></span> Settings</a>
 			</nav>
 		</div>
-		
+
 		<script type="module">
 			import {
 				attachFadeToScroller,
@@ -99,19 +99,23 @@
 					const href = escapeAttr(app.href)
 					const aria = escapeAttr(app.ariaLabel || `Open ${app.title}`)
 					const target = app.external ? " target=\"_blank\" rel=\"noopener\"" : ""
-			
+					const section = escapeAttr(app.section || "")
+
 					appsGrid.insertAdjacentHTML("beforeend", `
 						<section class="card appCard">
 							<div class="head">
 								<div class="title" style="align-items: center; display: flex;">
 									<span class="statusDot off" id="${dotId}"></span>
-									${title}
+									${section}
 								</div>
 							</div>
 			
 							<div class="appBody">
 								<a class="appIconLink" href="${href}" aria-label="${aria}"${target}>
 									<img class="appIcon" src="${icon}" alt="${title}" loading="lazy" decoding="async">
+									<div class="title">
+										${title}
+									</div>
 								</a>
 							</div>
 						</section>
