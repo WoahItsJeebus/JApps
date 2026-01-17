@@ -710,52 +710,62 @@ header>#toolbarFade {
 	scrollbar-width: thin;
 }
 
-/* ===== Bottom Tabs ===== */
-.tabsBar {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 12px;
+/* ===== Bottom Tabs Dock (iOS rubber-band safe) ===== */
+.tabsBar{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-	display: flex;
-	justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
 
-	z-index: 9999;
-
-	/* allow clicks only on the pill, not the whole bar strip */
-	pointer-events: none;
-
-	margin-top: 0;
-	border-top: 0;
-
-	padding-top: 0;
-	padding-bottom: 0;
-	padding-right: 12px;
-	padding-left: 12px;
+  /* this is the dock area that will cover the bottom “border” space */
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* child selector */
-.tabsBar .tabs {
-	pointer-events: auto;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+/* Dock underlay that fills to the very bottom even during overscroll */
+.tabsBar::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
 
-	/* single row */
-	flex-wrap: nowrap;
+  /* Covers: safe-area + your 12px lift + a bit of fade */
+  height: calc(env(safe-area-inset-bottom) + 64px);
 
-	gap: 4px;
-	padding: 8px;
+  background: transparent;
 
-	border: 1px solid var(--border);
-	border-radius: 24px;
-	background: rgba(0, 0, 0, .58);
-	transition: background-color 400ms ease, border-color 400ms ease;
-
-	/* keep inside screen bounds */
-	width: min(560px, calc(100vw - 24px));
-	overflow: hidden;
+  pointer-events:none;
 }
+
+/* The actual pill stays “lifted” */
+.tabsBar .tabs{
+  pointer-events: auto;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap: nowrap;
+
+  gap: 4px;
+  padding: 8px;
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: rgba(0,0,0,.58);
+  transition: background-color 400ms ease, border-color 400ms ease;
+
+  width: min(560px, calc(100vw - 24px));
+  overflow: hidden;
+
+  /* this is your original 12px lift, but without leaving a naked gap */
+  margin: 0 auto 12px auto;
+}
+
 
 @supports (padding: max(0px)) {
 	.tabsBar {
