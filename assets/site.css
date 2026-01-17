@@ -222,7 +222,6 @@ button:active {
 	-webkit-tap-highlight-color: transparent;
 }
 
-/* Keep your icon styling */
 .appIcon {
 	width: 72px;
 	height: 72px;
@@ -558,7 +557,6 @@ a.platformLink:active {
 #toolbarFade {
 	overflow: hidden;
 	border-radius: 999px;
-	/* matches your pill style */
 	max-width: 100%;
 
 	background: rgba(0, 0, 0, .10);
@@ -734,7 +732,6 @@ header>#toolbarFade {
   right:0;
   bottom:0;
 
-  /* Covers: safe-area + your 12px lift + a bit of fade */
   height: calc(env(safe-area-inset-bottom) + 64px);
 
   background: transparent;
@@ -761,8 +758,6 @@ header>#toolbarFade {
 
   width: min(560px, calc(100vw - 24px));
   overflow: hidden;
-
-  /* this is your original 12px lift, but without leaving a naked gap */
   margin: 0 auto 12px auto;
 }
 
