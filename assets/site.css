@@ -43,9 +43,7 @@ body {
 		calc(24px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
 }
 
-.wrap {
-	width: min(1040px, 100%);
-}
+.wrap { width: min(1040px, 100%); }
 
 header {
 	display: flex;
@@ -167,7 +165,7 @@ button:active {
 /* Section card: holds multiple apps */
 .appSection{
   width: 100%;
-  max-width: 720px; /* optional, keeps sections from getting comically wide */
+  max-width: 720px;
 }
 
 /* inner grid of apps within a section */
@@ -175,7 +173,7 @@ button:active {
   padding: 14px;
   display: grid;
   gap: 14px;
-
+  
   /* tile layout inside the section */
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   justify-items: center;
