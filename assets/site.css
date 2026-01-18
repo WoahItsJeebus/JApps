@@ -225,8 +225,13 @@ button:active {
 }
 
 .appIcon {
-	width: 64px;
-	height: 64px;
+	width:		128px;
+	height:		128px;
+	min-width:  64px;
+	min-height: 64px;
+	aspect-ratio: 1 / 1;
+	
+	display: flex;
 	border-radius: 12px;
 	box-shadow: 0 0 0 1px rgba(255, 255, 255, .12);
 	background: rgba(0, 0, 0, .18);
