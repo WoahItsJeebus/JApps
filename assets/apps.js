@@ -18,4 +18,12 @@ export const APPS = [
 		icon: "https://raw.githubusercontent.com/WoahItsJeebus/JFSC/refs/heads/main/favicon.ico",
 		state: "ok",
 	},
+	{
+		section: "Roblox",
+		key: "PLS_DONATE_Shop_Timer",
+		title: "PLS DONATE Shop Timer",
+		href: "https://woahitsjeebus.github.io/PDST/",
+		icon: "https://tr.rbxcdn.com/180DAY-2aba871a526e044c2bf46900ee1a39ba/256/256/Image/Webp/noFilter",
+		state: "ok",
+	},
 ]

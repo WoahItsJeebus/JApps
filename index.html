@@ -91,40 +91,69 @@
 			
 			function renderApps(list){
 				appsGrid.innerHTML = ""
-				for (const app of list){
-					const key = app.key || app.title || "app"
-					const dotId = `appDot_${key.replaceAll(/[^a-z0-9_\-]/gi, "_")}`
-					const icon = escapeAttr(app.icon)
-					const title = escapeAttr(app.title)
-					const href = escapeAttr(app.href)
-					const aria = escapeAttr(app.ariaLabel || `Open ${app.title}`)
-					const target = app.external ? " target=\"_blank\" rel=\"noopener\"" : ""
-					const section = escapeAttr(app.section || "")
 
+				// Group apps by section
+				const groups = new Map()
+				for (const app of list){
+					const section = (app.section || "Other").trim() || "Other"
+					if (!groups.has(section)) groups.set(section, [])
+					groups.get(section).push(app)
+				}
+
+				// Optional: sort sections (puts "Other" last)
+				const sectionNames = Array.from(groups.keys()).sort((a, b) => {
+					if (a === "Other") return 1
+					if (b === "Other") return -1
+					return a.localeCompare(b)
+				})
+
+				for (const sectionName of sectionNames){
+					const safeSection = escapeAttr(sectionName)
+					const sectionId = `section_${sectionName.replaceAll(/[^a-z0-9_\-]/gi, "_")}`
+
+					// Section card shell (one per section)
 					appsGrid.insertAdjacentHTML("beforeend", `
-						<section class="card appCard">
+						<section class="card appSection" id="${sectionId}">
 							<div class="head">
-								<div class="title" style="align-items: center; display: flex;">
-									<span class="statusDot off" id="${dotId}"></span>
-									${section}
-								</div>
+								<div class="title">${safeSection}</div>
 							</div>
-			
-							<div class="appBody">
-								<a class="appIconLink" href="${href}" aria-label="${aria}"${target}>
-									<img class="appIcon" src="${icon}" alt="${title}" loading="lazy" decoding="async">
-									<div class="title">
-										${title}
-									</div>
-								</a>
-							</div>
+							<div class="appSectionGrid"></div>
 						</section>
 					`)
-			
-					setDotState(document.getElementById(dotId), app.state || "ok")
+
+					const grid = document.querySelector(`#${CSS.escape(sectionId)} .appSectionGrid`)
+
+					// Render apps inside the section card
+					for (const app of groups.get(sectionName)){
+						const key = app.key || app.title || "app"
+						const dotId = `appDot_${key.replaceAll(/[^a-z0-9_\-]/gi, "_")}`
+
+						const icon = escapeAttr(app.icon)
+						const title = escapeAttr(app.title)
+						const href = escapeAttr(app.href)
+						const aria = escapeAttr(app.ariaLabel || `Open ${app.title}`)
+						const target = app.external ? ` target="_blank" rel="noopener"` : ""
+
+						grid.insertAdjacentHTML("beforeend", `
+							<div class="appTile">
+								<div class="appTileTop">
+									<span class="statusDot off" id="${dotId}"></span>
+									<div class="appTileTitle">${title}</div>
+								</div>
+
+								<div class="appBody">
+									<a class="appIconLink" href="${href}" aria-label="${aria}"${target}>
+										<img class="appIcon" src="${icon}" alt="${title}" loading="lazy" decoding="async">
+									</a>
+								</div>
+							</div>
+						`)
+
+						setDotState(document.getElementById(dotId), app.state || "ok")
+					}
 				}
 			}
-			
+
 			renderApps(APPS)
 		</script>
 	</body>
