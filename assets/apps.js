@@ -28,4 +28,13 @@ export const APPS = [
 		state: "ok",
 		external: true,
 	},
+	{
+		section: "Wuthering Waves",
+		key: "WuWa_Trackers",
+		title: "WuWa Trackers",
+		href: "https://woahitsjeebus.github.io/JWWT/",
+		icon: "https://img.amiami.com/images/product/thumb300/251/GOODS-04606597.jpg",
+		state: "ok",
+		external: true,
+	},
 ]
