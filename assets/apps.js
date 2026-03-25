@@ -37,4 +37,13 @@ export const APPS = [
 		state: "ok",
 		external: true,
 	},
+	{
+		section: "Jeebus' Tools",
+		key: "Jeebus_Tools",
+		title: "To-Do List Manager",
+		href: "https://woahitsjeebus.github.io/JTDM/",
+		icon: "https://cdn.pixabay.com/photo/2017/06/10/07/18/list-2389219_1280.png",
+		state: "ok",
+		external: true,
+	},
 ]
