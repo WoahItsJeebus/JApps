@@ -307,7 +307,10 @@
 			initAppSettings();
 			startOrbBackgroundFromSettings({ spawnEveryMs: 1600, sizeMin: 340, sizeMax: 720 });
 			
-			document.getElementById("versionCode").textContent = `v${_VERSION}`;
+			fetch("../../assets/versions.json", { cache: "no-store" })
+				.then(r => r.json())
+				.then(d => { document.getElementById("versionCode").textContent = `v${d.current || _VERSION}` })
+				.catch(() => { document.getElementById("versionCode").textContent = `v${_VERSION}` });
 			document.getElementById("hardRefreshBtn")?.addEventListener("click", hardReload);
 			
 			const platformLinks = [

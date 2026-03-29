@@ -29,7 +29,39 @@
 				</div>
 			</div>
 
+			<div style="display: flex; justify-content: center; margin-bottom: 14px;">
+				<button class="suggestBtn" id="suggestToolBtn">
+					<span class="tabDot"></span> Suggest a Tool
+				</button>
+			</div>
+
 			<div class="grid" id="appsGrid" style="width: 100%;"></div>
+
+			<!-- Suggest a Tool modal -->
+			<div class="modalOverlay" id="suggestModal">
+				<div class="modalCard card">
+					<div class="head">
+						<div class="title">Suggest a Tool</div>
+						<button class="modalClose" id="suggestClose">&times;</button>
+					</div>
+					<form class="form" id="suggestForm" autocomplete="off">
+						<div class="field">
+							<label class="label" for="suggestTitle">Title *</label>
+							<input type="text" id="suggestTitle" placeholder="Name of the tool or app" required maxlength="100">
+						</div>
+						<div class="field">
+							<label class="label" for="suggestDesc">Description *</label>
+							<textarea id="suggestDesc" placeholder="What should it do? Any details help." required maxlength="1000"></textarea>
+						</div>
+						<div class="field">
+							<label class="label" for="suggestName">Your Name <span class="muted" style="font-weight:400;">(optional, blank = anonymous)</span></label>
+							<input type="text" id="suggestName" placeholder="Anonymous" maxlength="50">
+						</div>
+						<div id="suggestStatus" class="help" style="min-height:1.35em;"></div>
+						<button type="submit" id="suggestSubmitBtn" class="smallBtn">Submit Suggestion</button>
+					</form>
+				</div>
+			</div>
 			<div class="footer" style="display: flex; justify-content: center;">
 				<code class="inline" id="versionCode">v—</code>
 			</div>
@@ -53,11 +85,16 @@
 			} from "./assets/site.js"
 			
 			import { APPS } from "./assets/apps.js"
+			import { SUGGESTIONS } from "./assets/config.js"
 			
 			// Always-run boot (won’t brick if api/db/oauth are broken)
 			const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Local"
 			document.getElementById("tzPill").textContent = `Local TZ: ${tz}`
-			document.getElementById("versionCode").textContent = `v${_VERSION}`
+			
+			fetch("./assets/versions.json", { cache: "no-store" })
+				.then(r => r.json())
+				.then(d => { document.getElementById("versionCode").textContent = `v${d.current || _VERSION}` })
+				.catch(() => { document.getElementById("versionCode").textContent = `v${_VERSION}` })
 			
 			initAppSettings()
 			startOrbBackgroundFromSettings({ spawnEveryMs: 1600, sizeMin: 340, sizeMax: 720 })
@@ -155,6 +192,73 @@
 			}
 
 			renderApps(APPS)
+
+			// ── Suggest-a-Tool modal ──
+			const suggestModal   = document.getElementById("suggestModal")
+			const suggestForm    = document.getElementById("suggestForm")
+			const suggestStatus  = document.getElementById("suggestStatus")
+			const suggestSubmit  = document.getElementById("suggestSubmitBtn")
+
+			function openModal()  { suggestModal.classList.add("open") }
+			function closeModal() { suggestModal.classList.remove("open"); suggestStatus.textContent = "" }
+
+			document.getElementById("suggestToolBtn").addEventListener("click", openModal)
+			document.getElementById("suggestClose").addEventListener("click", closeModal)
+			suggestModal.addEventListener("click", e => { if (e.target === suggestModal) closeModal() })
+
+			const COOLDOWN_KEY = "japps_suggest_last"
+
+			function getCooldownRemaining() {
+				const last = parseInt(localStorage.getItem(COOLDOWN_KEY) || "0", 10)
+				if (!last) return 0
+				const elapsed = Date.now() - last
+				return Math.max(0, SUGGESTIONS.cooldownMs - elapsed)
+			}
+
+			suggestForm.addEventListener("submit", async e => {
+				e.preventDefault()
+
+				const remaining = getCooldownRemaining()
+				if (remaining > 0) {
+					const secs = Math.ceil(remaining / 1000)
+					suggestStatus.textContent = `Please wait ${secs}s before submitting again.`
+					return
+				}
+
+				if (!SUGGESTIONS.workerUrl) {
+					suggestStatus.textContent = "Suggestions are currently disabled."
+					return
+				}
+
+				const title = document.getElementById("suggestTitle").value.trim()
+				const desc  = document.getElementById("suggestDesc").value.trim()
+				const name  = document.getElementById("suggestName").value.trim() || "Anonymous"
+
+				if (!title || !desc) return
+
+				suggestSubmit.disabled = true
+				suggestStatus.textContent = "Sending…"
+
+				try {
+					const res = await fetch(SUGGESTIONS.workerUrl, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ title, desc, name }),
+					})
+
+					if (res.ok) {
+						localStorage.setItem(COOLDOWN_KEY, String(Date.now()))
+						suggestStatus.textContent = "Suggestion sent — thank you!"
+						suggestForm.reset()
+					} else {
+						suggestStatus.textContent = `Failed to send (HTTP ${res.status}). Try again later.`
+					}
+				} catch (err) {
+					suggestStatus.textContent = "Network error — please try again."
+				} finally {
+					suggestSubmit.disabled = false
+				}
+			})
 		</script>
 	</body>
 </html>

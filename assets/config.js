@@ -15,3 +15,8 @@ export const JFSC_NET = {
 	usersBase: "https://users.roblox.com",
 	usersFallbackBase: "https://users.roproxy.com",
 }
+
+export const SUGGESTIONS = {
+	workerUrl: "https://japps.anthonyshirreffs.workers.dev",                        // Cloudflare Worker proxy URL — fill in to enable
+	cooldownMs: 5 * 60 * 1000,           // 5 minutes between submissions
+}
